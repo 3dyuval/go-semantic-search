@@ -5,9 +5,7 @@ package cmd
 
 import (
 	"fmt"
-	"io"
-	"net/http"
-	"os"
+	"os/exec"
 
 	"github.com/spf13/cobra"
 )
@@ -27,22 +25,15 @@ func init() {
 }
 
 func getModel() error {
-	base_url := "https://huggingface.co/BAAI/bge-small-en-v1.5/resolve/main/onnx/model.onnx"
+	cmd := exec.Command("ollama", "list")
+	value := cmd.Run()
 
-	resp, err := http.Get(base_url)
-	if err != nil {
-		return err
+	if value != nil {
+		fmt.Println("Found ollama models: %", value)
+		return value
 	}
 
-	defer resp.Body.Close()
+	fmt.Println("No ollama models found")
 
-	f, err := os.Create("/tmp/model.onnx")
-	if err != nil {
-		return err
-	}
-
-	defer f.Close()
-	_, err = io.Copy(f, resp.Body)
-
-	return err
+	return value
 }
