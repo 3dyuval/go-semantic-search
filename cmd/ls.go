@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"os/exec"
 	"strings"
-	"text/template"
 
 	"github.com/spf13/cobra"
 )
